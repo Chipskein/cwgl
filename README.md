@@ -1,5 +1,9 @@
 # Conway's Game of Life
 
+<p align="center">
+    <img src="https://github.com/ziglang/logo/raw/master/zero.svg" alt="zero" width="320" height="320">
+</p>
+
 ## Index
 - [Demo](#demo)
 - [Description](#description)
@@ -9,8 +13,10 @@
 - [How to Build](#how-to-build)
 - [Dependencies](#dependencies)
 - [References](#references)
+
 ### Demo
 **INSERT VIDEO**
+
 ### Description
 Conway's Game of Life is a cellular automaton devised by the mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. Despite its simple rules, the Game of Life can produce complex patterns and behaviors.
 
