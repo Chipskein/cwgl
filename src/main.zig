@@ -13,7 +13,7 @@ const ROWS: comptime_int = HEIGHT / PIXEL_SIZE;
 const COLUMNS: comptime_int = WIDTH / PIXEL_SIZE;
 var CELLS: [ROWS][COLUMNS]i32 = undefined;
 var IsRunning = true;
-fn draw_grid() !void {
+fn DrawGrid() !void {
     for (0..@intCast(ROWS)) |y| {
         for (0..@intCast(COLUMNS)) |x| {
             var color = COLOR_REC_OFF;
@@ -30,7 +30,7 @@ fn draw_grid() !void {
         }
     }
 }
-fn get_alive_neighbours(row: usize, column: usize) i32 {
+fn GetAliveNeighbours(row: usize, column: usize) i32 {
     var live: i32 = 0;
     const neighbours_offset = [8][2]i32{
         [_]i32{ -1, 0 }, // Directly above
@@ -56,7 +56,7 @@ fn get_alive_neighbours(row: usize, column: usize) i32 {
     }
     return live;
 }
-fn update_state() !void {
+fn UpdateState() !void {
     var CELLS_TEMP = CELLS;
     //RULES:
     //Any live cell with fewer than two live neighbours dies, as if by underpopulation.
@@ -65,7 +65,7 @@ fn update_state() !void {
     //Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
     for (CELLS_TEMP, 0..) |row, row_index| {
         for (0..row.len) |column_index| {
-            const alive_neighbours = get_alive_neighbours(row_index, column_index);
+            const alive_neighbours = GetAliveNeighbours(row_index, column_index);
             const cell = CELLS_TEMP[row_index][column_index];
             const isAlive = cell == 1;
             if (isAlive) {
@@ -84,7 +84,7 @@ fn update_state() !void {
     }
     CELLS = CELLS_TEMP;
 }
-fn init_state() !void {
+fn InitState() !void {
     var rand_impl = std.rand.DefaultPrng.init(0);
     const prob = @mod(rand_impl.random().int(i8), 100);
     for (0..CELLS.len) |y| {
@@ -96,14 +96,14 @@ fn init_state() !void {
         }
     }
 }
-fn clear_state() !void {
+fn ClearState() !void {
     for (0..CELLS.len) |y| {
         for (0..CELLS[y].len) |x| {
             CELLS[y][x] = 0;
         }
     }
 }
-fn handle_input() !void {
+fn HandleInput() !void {
     if (ray.IsKeyPressed(ray.KEY_ESCAPE)) {
         ray.CloseWindow();
     }
@@ -112,8 +112,8 @@ fn handle_input() !void {
     }
     if (IsRunning) {
         if (ray.IsKeyPressed(ray.KEY_ENTER)) {
-            try clear_state();
-            try init_state();
+            try ClearState();
+            try InitState();
         }
         if (ray.IsKeyPressed(ray.KEY_RIGHT) or ray.IsKeyPressedRepeat(ray.KEY_RIGHT)) {
             if (FPS <= 60) {
@@ -129,29 +129,25 @@ fn handle_input() !void {
         }
     }
 }
-pub fn main() !void {
+fn RunGame() !void {
     ray.SetTraceLogLevel(ray.LOG_ERROR);
     ray.SetConfigFlags(ray.FLAG_MSAA_4X_HINT | ray.FLAG_VSYNC_HINT);
     ray.InitWindow(WIDTH, HEIGHT, TITLE);
     defer ray.CloseWindow();
     ray.SetTargetFPS(FPS);
-    try init_state();
+    try InitState();
     while (!ray.WindowShouldClose()) {
         ray.BeginDrawing();
         defer ray.EndDrawing();
         ray.ClearBackground(BACKGROUND_COLOR);
-        try handle_input();
+        try HandleInput();
         if (IsRunning) {
-            try update_state();
+            try UpdateState();
         }
-        try draw_grid();
+        try DrawGrid();
         ray.DrawFPS(0, 0);
     }
 }
-
-//try stdout.print("\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n", .{});
-//try stdout.print("Here are some hints:\n", .{});
-//try stdout.print("Run `zig build --help` to see all the options\n", .{});
-//try stdout.print("Run `zig build -Doptimize=ReleaseSmall` for a small release build\n", .{});
-//try stdout.print("Run `zig build -Doptimize=ReleaseSmall -Dstrip=true` for a smaller release build, that strips symbols\n", .{});
-//try stdout.print("Run `zig build -Draylib-optimize=ReleaseFast` for a debug build of your application, that uses a fast release of raylib (if you are only debugging your code)\n", .{});
+pub fn main() !void {
+    try RunGame();
+}
