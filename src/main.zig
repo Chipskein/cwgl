@@ -4,7 +4,7 @@ const ray = @import("raylib.zig");
 var FPS: i32 = 15;
 const WIDTH = 750;
 const HEIGHT = 750;
-const PIXEL_SIZE = 10;
+const PIXEL_SIZE = 15;
 const TITLE = "Conway game of life";
 const BACKGROUND_COLOR = ray.GRAY;
 const COLOR_REC_OFF = ray.BLACK;
@@ -115,13 +115,17 @@ fn handle_input() !void {
             try clear_state();
             try init_state();
         }
-        if (ray.IsKeyPressed(ray.KEY_RIGHT)) {
-            FPS += 5;
-            ray.SetTargetFPS(FPS);
+        if (ray.IsKeyPressed(ray.KEY_RIGHT) or ray.IsKeyPressedRepeat(ray.KEY_RIGHT)) {
+            if (FPS <= 60) {
+                FPS += 1;
+                ray.SetTargetFPS(FPS);
+            }
         }
-        if (ray.IsKeyPressed(ray.KEY_LEFT)) {
-            FPS -= 5;
-            ray.SetTargetFPS(FPS);
+        if (ray.IsKeyPressed(ray.KEY_LEFT) or ray.IsKeyPressedRepeat(ray.KEY_LEFT)) {
+            if (FPS > 10) {
+                FPS -= 1;
+                ray.SetTargetFPS(FPS);
+            }
         }
     }
 }
