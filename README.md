@@ -1,5 +1,9 @@
 # Conway's Game of Life
 
+https://github.com/Chipskein/cwgl/assets/47486707/e15c2a00-e07f-48fa-81ea-26c98dc00f3b
+
+
+
 Conway's Game of Life is a cellular automaton devised by the mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. Despite its simple rules, the Game of Life can produce complex patterns and behaviors.
 
 ## Rules
