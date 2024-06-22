@@ -1,7 +1,7 @@
 # Conway's Game of Life
 
 <p align="center">
-    <img src="https://github.com/ziglang/logo/raw/master/zero.svg" alt="zero" width="320" height="320">
+    <img src="https://github.com/ziglang/logo/raw/master/zero.svg" alt="zero" width="120" height="120">
 </p>
 
 ## Index
@@ -15,7 +15,8 @@
 - [References](#references)
 
 ### Demo
-**INSERT VIDEO**
+
+![screenshot000](https://github.com/Chipskein/cwgl/assets/47486707/bf108de2-80ea-49d8-a649-8e89e701cb11)
 
 ### Description
 Conway's Game of Life is a cellular automaton devised by the mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. Despite its simple rules, the Game of Life can produce complex patterns and behaviors.
@@ -38,9 +39,18 @@ These rules create fascinating patterns and structures, from simple still lifes 
 | `KEY_RIGHT`     | When `IsRunning` is true, increases the FPS (Frames Per Second) by 1, up to a maximum of 60.             |
 | `KEY_LEFT`      | When `IsRunning` is true, decreases the FPS by 1, but not below 10.                                     |
 
-### How to run
+
+
 ### How to Build
+    zig build -Doptimize=ReleaseSmall
+
+### How to Run
+    ./zig-out/bin/cwgl
+
 ### Dependencies
+
+* [Raylib](https://github.com/raysan5/raylib)
+  
 ### References
 
 - [Wikipedia: Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
