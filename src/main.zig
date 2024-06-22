@@ -1,26 +1,25 @@
 const std = @import("std");
 const ray = @import("raylib.zig");
 
+var FPS: i32 = 15;
 const WIDTH = 750;
 const HEIGHT = 750;
-const FPS = 12;
-const PIXEL_SIZE = 25;
+const PIXEL_SIZE = 10;
 const TITLE = "Conway game of life";
-const BACKGROUND_COLOR = ray.BLACK;
+const BACKGROUND_COLOR = ray.GRAY;
+const COLOR_REC_OFF = ray.BLACK;
+const COLOR_REC_ON = ray.GREEN;
 const ROWS: comptime_int = HEIGHT / PIXEL_SIZE;
 const COLUMNS: comptime_int = WIDTH / PIXEL_SIZE;
 var CELLS: [ROWS][COLUMNS]i32 = undefined;
-var CELLS_TEMP: [ROWS][COLUMNS]i32 = undefined;
-
+var IsRunning = true;
 fn draw_grid() !void {
-    const colorRecOff = ray.GRAY;
-    const colorRecOn = ray.GREEN;
     for (0..@intCast(ROWS)) |y| {
         for (0..@intCast(COLUMNS)) |x| {
-            var color = colorRecOff;
+            var color = COLOR_REC_OFF;
             const cell_state = CELLS[y][x];
             if (cell_state == 1) {
-                color = colorRecOn;
+                color = COLOR_REC_ON;
             }
             const row: i32 = @intCast(y);
             const column: i32 = @intCast(x);
@@ -58,7 +57,7 @@ fn get_alive_neighbours(row: usize, column: usize) i32 {
     return live;
 }
 fn update_state() !void {
-    CELLS_TEMP = CELLS;
+    var CELLS_TEMP = CELLS;
     //RULES:
     //Any live cell with fewer than two live neighbours dies, as if by underpopulation.
     //Any live cell with more than three live neighbours dies, as if by overpopulation.
@@ -85,24 +84,64 @@ fn update_state() !void {
     }
     CELLS = CELLS_TEMP;
 }
+fn init_state() !void {
+    var rand_impl = std.rand.DefaultPrng.init(0);
+    const prob = @mod(rand_impl.random().int(i8), 100);
+    for (0..CELLS.len) |y| {
+        for (0..CELLS[y].len) |x| {
+            const random = @mod(rand_impl.random().int(i8), 100);
+            if (random > prob) {
+                CELLS[y][x] = 1;
+            }
+        }
+    }
+}
+fn clear_state() !void {
+    for (0..CELLS.len) |y| {
+        for (0..CELLS[y].len) |x| {
+            CELLS[y][x] = 0;
+        }
+    }
+}
+fn handle_input() !void {
+    if (ray.IsKeyPressed(ray.KEY_ESCAPE)) {
+        ray.CloseWindow();
+    }
+    if (ray.IsKeyPressed(ray.KEY_SPACE)) {
+        IsRunning = !IsRunning;
+    }
+    if (IsRunning) {
+        if (ray.IsKeyPressed(ray.KEY_ENTER)) {
+            try clear_state();
+            try init_state();
+        }
+        if (ray.IsKeyPressed(ray.KEY_RIGHT)) {
+            FPS += 5;
+            ray.SetTargetFPS(FPS);
+        }
+        if (ray.IsKeyPressed(ray.KEY_LEFT)) {
+            FPS -= 5;
+            ray.SetTargetFPS(FPS);
+        }
+    }
+}
 pub fn main() !void {
+    ray.SetTraceLogLevel(ray.LOG_ERROR);
     ray.SetConfigFlags(ray.FLAG_MSAA_4X_HINT | ray.FLAG_VSYNC_HINT);
     ray.InitWindow(WIDTH, HEIGHT, TITLE);
     defer ray.CloseWindow();
     ray.SetTargetFPS(FPS);
-    //create a init state function
-    CELLS[2][1] = 1;
-    CELLS[3][2] = 1;
-    CELLS[4][0] = 1;
-    CELLS[4][1] = 1;
-    CELLS[4][2] = 1;
+    try init_state();
     while (!ray.WindowShouldClose()) {
-        if (ray.IsKeyPressed(ray.KEY_ESCAPE)) ray.CloseWindow();
         ray.BeginDrawing();
         defer ray.EndDrawing();
         ray.ClearBackground(BACKGROUND_COLOR);
+        try handle_input();
+        if (IsRunning) {
+            try update_state();
+        }
         try draw_grid();
-        try update_state();
+        ray.DrawFPS(0, 0);
     }
 }
 
