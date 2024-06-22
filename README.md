@@ -18,6 +18,5 @@ These rules create fascinating patterns and structures, from simple still lifes 
 
 - [Wikipedia: Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 - [The Math of Conway's Game of Life](https://www.youtube.com/watch?v=R9Plq-D1gEk) (YouTube video)
-- [ConwayLife.com](https://conwaylife.com/) - A website dedicated to Conway's Game of Life with various resources, patterns, and discussions.
 
-Explore the Game of Life to witness the emergence of complexity from simple rules!
+
