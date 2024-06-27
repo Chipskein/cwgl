@@ -42,7 +42,7 @@ These rules create fascinating patterns and structures, from simple still lifes 
 
 
 ### How to Build
-    zig build -Doptimize=ReleaseSmall
+    zig build 
 
 ### How to Run
     ./zig-out/bin/cwgl
